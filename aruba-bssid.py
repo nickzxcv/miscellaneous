@@ -1,6 +1,8 @@
 import argparse
 import re
 
+# based on
+# https://community.arubanetworks.com/blogs/anandkumar-sukumar1/2020/10/20/how-is-the-bssid-derived-from-the-access-point-ethernet-mac-address
 parser = argparse.ArgumentParser(description='Convert Aruba AP MAC to BSSID.')
 parser.add_argument('mac', metavar='MAC', type=str, help='AP Ethernet MAC')
 args = parser.parse_args()
