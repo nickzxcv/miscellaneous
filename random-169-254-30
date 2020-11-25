@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Generates a random /30 subnet out of 169.254.0.0/16 for link to AWS
+third_octet=$(($RANDOM % 256))
+fourth_octet=$(($RANDOM % 256))
+
+masked_octet=$(($fourth_octet & 252))
+masked_plusone=$(($masked_octet + 1))
+masked_plustwo=$(($masked_octet + 2))
+
+echo "169.254.$third_octet.$masked_octet/30"
+echo "169.254.$third_octet.$masked_plusone"
+echo "169.254.$third_octet.$masked_plustwo"
