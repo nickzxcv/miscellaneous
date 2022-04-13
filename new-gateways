@@ -1,7 +1,8 @@
 #!/bin/bash
 
 function usage {
-        echo "Usage:
+        echo "Generate F5 tmsh commands to create new nodes and add members to pool.
+Usage:
   new-gateways -f <inputfile> -p <poolname> -i <portnumber> [-i <portnumber>]...
 "
 }
