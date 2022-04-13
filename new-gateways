@@ -1,0 +1,57 @@
+#!/bin/bash
+
+function usage {
+        echo "Usage:
+  new-gateways -f <inputfile> -p <poolname> -i <portnumber> [-i <portnumber>]...
+"
+}
+
+instanceports=()
+
+while getopts "f:p:i:h" opt; do
+        case $opt in
+        f)
+                inputfile=$OPTARG
+                ;;
+        p)
+                poolname=$OPTARG
+                ;;
+        i)
+                if test $OPTARG -gt 0 ; then
+                        instanceports+=($OPTARG)
+                else
+                        echo "-i needs integer argument greater than zero"
+                        usage
+                        exit 1
+                fi
+                ;;
+        h|*)
+                usage
+                exit 1
+                ;;
+        esac
+done
+
+if [[ ${#instanceports[@]} -lt 1 ]]; then
+        echo "Didn't get any instance ports from -i argument." >&2
+        usage
+        exit 1
+fi
+
+if [[ -n $inputfile ]] && [[ -n $poolname ]] ; then
+        for host in $(cat $inputfile); do
+                ip=$(dig +short $host)
+                memberstring=""
+                for port in "${instanceports[@]}"; do
+                        memberstring+="$host:$port "
+                done
+
+                echo "create ltm node $host { address $ip }"
+                echo "modify ltm node $host state user-down"
+                echo "modify ltm pool $poolname { members add { $memberstring} }"
+        done
+else
+        echo "Didn't get a -f or -p argument." >&2
+        usage
+        exit 1
+fi
